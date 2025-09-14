@@ -1,4 +1,4 @@
-export default function ButtonAuth(props){
+export default function Button(props){
     return (
         <button
          className=""

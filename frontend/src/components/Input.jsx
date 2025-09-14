@@ -1,4 +1,4 @@
-export default function InputAuth(props) {
+export default function Input(props) {
     return(
         <>
         <label
