@@ -1,19 +1,45 @@
-import AppButton from "../../components/app/ButtonHome";
+import Button from "../../components/Button";
+import { House, CirclePlus, List, BarChart3 } from "lucide-react";
 
 export default function Home() {
-    return (
-        <>
-            <div> {/* primeira seção e maior com as boas vindas*/}
-                {/* icone que irei fazer */}
-                <h1>Bem-vindo ao SGD</h1>
-                <div>{/* ficar na parte de baixo do h1*/}
-                    <AppButton/> {/* dashboard ou home */}
-                    <AppButton/> {/* adicionar despesa */}
-                    <AppButton/> {/* Listas Despesas(com filtros ou não) */}
-                    <AppButton/> {/* Relatorios */}
-                </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="container mx-auto px-6 py-16">
+        <div className="flex flex-col items-center justify-center min-h-[80vh]">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-white mb-4">
+              Seja bem-vindo(a) ao SGD
+            </h1>
+            <p className="text-gray-300 text-lg">
+              Sistema de Gestão de Despesas
+            </p>
+          </div>
 
-        </>
-    )
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
+            {/* <Button icon={House} text="Dashboard" path="/" variant="primary" /> */}
+            <Button
+              icon={CirclePlus}
+              text="Adicionar Despesa"
+              path="/adicionar-despesas"
+              variant="secondary"
+              className=""
+            />
+            <Button
+              icon={List}
+              text="Lista de Despesas"
+              path="/listar-despesas"
+              variant="secondary"
+            />
+            <Button
+              icon={BarChart3}
+              text="Relatórios"
+              path="/relatorios"
+              variant="secondary"
+              className="flex-1"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
