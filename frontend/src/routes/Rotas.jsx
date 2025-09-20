@@ -1,20 +1,53 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom'
-import Home from '../pages/home/Home'
-import AddDespesas from '../pages/app/AddDespesas'
-import ListasDespesas from '../pages/app/ListaDespesas'
-import Relatorios from '../pages/app/Relatorios'
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import Home from "../pages/Home";
+import AddDespesas from "../pages/AddDespesas";
+import ListasDespesas from "../pages/ListaDespesas";
+import Relatorios from "../pages/Relatorios";
+import Register from "../pages/Register";
+import Login from "../pages/Login";
+import PrivateRoute from "../components/PrivateRoute";
 
 function Rotas() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/adicionar-despesas' element={<AddDespesas/>}/>
-        <Route path='/listar-despesas' element={<ListasDespesas/>}/>
-        <Route path='/relatorios' element={<Relatorios/>}/>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adicionar-despesas"
+          element={
+            <PrivateRoute>
+              <AddDespesas />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/listar-despesas"
+          element={
+            <PrivateRoute>
+              <ListasDespesas />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/relatorios"
+          element={
+            <PrivateRoute>
+              <Relatorios />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default Rotas
+export default Rotas;

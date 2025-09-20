@@ -1,12 +1,12 @@
-import Header from "../../components/Header";
+import Header from "../components/Header";
 import { useEffect, useState } from "react";
-import { constants } from "../../constants/constants";
+import { constants } from "../constants/constants";
 import { useMutation } from "@tanstack/react-query";
-import api from "../../services/api";
+import api from "../services/api";
 import { useForm } from "react-hook-form";
-import Toast from "../../components/Toast";
-import FormInput from "../../components/FormInput";
-import FormSelect from "../../components/FormSelect";
+import Toast from "../components/Toast";
+import FormInput from "../components/FormInput";
+import FormSelect from "../components/FormSelect";
 
 export default function AddDespesas() {
 	const [isSuccess, setIsSuccess] = useState(false);
@@ -49,7 +49,7 @@ export default function AddDespesas() {
 		},
 		onSuccess: () => {
 			setIsSuccess(true);
-			// reset();
+			reset();
 		},
 		onError: () => {
 			setIsError(true);
@@ -81,6 +81,7 @@ export default function AddDespesas() {
 				<Header
 					title="Adicione Despesa"
 					p="Registre uma nova despesa"
+					back={true}
 				/>
 				<div className="bg-gray-800/60 p-6 rounded-xl shadow-lg">
 					<form

@@ -1,13 +1,13 @@
-import Header from "../../components/Header";
-import CardDespesa from "../../components/Card";
-import { useState, useEffect } from "react";
+import Header from "../components/Header";
+import CardDespesa from "../components/Card";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "../../components/Pagination";
-import api from "../../services/api";
-import Toast from "../../components/Toast";
-import EditDespesa from "../../components/EditDespesa";
-import DeleteDespesa from "../../components/DeleteDespesa";
-import { useToast } from "../../hooks/useToast";
+import Pagination from "../components/Pagination";
+import api from "../services/api";
+import Toast from "../components/Toast";
+import EditDespesa from "../components/EditDespesa";
+import DeleteDespesa from "../components/DeleteDespesa";
+import { useToast } from "../hooks/useToast";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +20,8 @@ export default function ListasDespesas() {
 			return response.data;
 		},
 	});
+
+	console.log("merda\n\n\n\n\n", data)
 
 	const [editingId, setEditingId] = useState(null);
 	const [deletingId, setDeletingId] = useState(null);
@@ -72,6 +74,7 @@ export default function ListasDespesas() {
 			<Header
 				title="Lista de Despesas"
 				p="Aqui aparecerá a lista de suas despesas"
+				back={true}
 			/>
 
 			{isLoading && <p>carregando, bro</p>}

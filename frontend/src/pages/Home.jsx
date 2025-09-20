@@ -1,4 +1,4 @@
-import Button from "../../components/Button";
+import Button from "../components/Button";
 import { House, CirclePlus, List, BarChart3 } from "lucide-react";
 
 export default function Home() {

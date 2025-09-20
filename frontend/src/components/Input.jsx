@@ -22,7 +22,7 @@ export default function Input({
 	const v = variants[variant] ?? variants.textWhite;
 
 	return (
-		<div className="mb-4 w-full">
+		<div className=" w-full">
 			<label className={`${v.label} block text-sm font-medium mb-2`}>
 				{label}
 			</label>
