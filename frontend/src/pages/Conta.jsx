@@ -1,32 +1,57 @@
 import api from "../services/api";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "../components/Header";
 import { useState } from "react";
 import AlterarDados from "../components/AlterarDados";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/Toast";
+import { useToast } from "../hooks/useToast";
 
 export default function Conta() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [alterarDados, setAlterarDados] = useState(false);
+	const queryClient = useQueryClient();
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["conta"],
 		queryFn: async () => await api.get("/usuario"),
 		staleTime: 1000 * 60 * 60,
-		
 	});
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const mutation = useMutation({
 		mutationFn: async () => await api.post("/auth/logout"),
 		onSuccess: () => navigate(0),
-		onError: (error) => console.log(error)
-	})
+		onError: (error) => console.log(error),
+	});
+
+	const alterarToast = useToast();
+
+	const handleAlterarSuccess = () => {
+		alterarToast.trigger({
+			type: "success",
+			message: "Dados alterados com sucesso!",
+		});
+		setAlterarDados(false);
+		queryClient.invalidateQueries(["usuario"]);
+	};
+
+	const handleAlterarError = () => {
+		alterarToast.trigger({
+			type: "error",
+			message: "Não foi possível alterar dados.",
+		});
+	};
 
 	return (
 		<div className="min-h-screen w-full flex items-center justify-center p-10 bg-gradient-to-br from-gray-900 to-gray-800 overflow-y-auto overflow-x-hidden">
 			<div className="w-full max-w-xl px-4">
+				<Toast
+					show={alterarToast.show}
+					type={alterarToast.type}
+					message={alterarToast.message}
+				/>
 				<Header
 					title="Conta"
 					p="Aqui estão os dados da sua conta"
@@ -34,7 +59,12 @@ export default function Conta() {
 				/>
 
 				{alterarDados && (
-					<AlterarDados usuario={data?.data.username} setAlterarDados={setAlterarDados} />
+					<AlterarDados
+						usuario={data?.data.username}
+						setAlterarDados={setAlterarDados}
+						handleAlterarError={handleAlterarError}
+						handleAlterarSuccess={handleAlterarSuccess}
+					/>
 				)}
 
 				<div className="bg-gray-800/60 p-6 rounded-xl shadow-lg">
@@ -73,17 +103,17 @@ export default function Conta() {
 					</div>
 					<div className="flex flex-col gap-3">
 						<button
-						onClick={() => setAlterarDados(true)}
-						className="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition shadow-lg"
-					>
-						Alterar dados
-					</button>
-					<button
-						onClick={() => mutation.mutate()}
-						className="w-full flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition shadow-lg"
-					>
-						Sair
-					</button>
+							onClick={() => setAlterarDados(true)}
+							className="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition shadow-lg"
+						>
+							Alterar dados
+						</button>
+						<button
+							onClick={() => mutation.mutate()}
+							className="w-full flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition shadow-lg"
+						>
+							Sair
+						</button>
 					</div>
 				</div>
 			</div>

@@ -1,12 +1,11 @@
 import { useState } from "react";
 import FormInput from "./FormInput";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import api from "../services/api";
 
 export default function AlterarDados(props) {
 	const [alterarSenha, setAlterarSenha] = useState(false);
-	const queryClient = useQueryClient();
 
 	const { control, reset, handleSubmit, watch, getValues } = useForm({
 		defaultValues: {
@@ -24,12 +23,11 @@ export default function AlterarDados(props) {
 			});
 			return response;
 		},
-		onSuccess: (response) => {
-			queryClient.invalidateQueries(["usuario"]);
-			console.log(response);
-			props.setAlterarDados(false);
+		onSuccess: () => {
+			props.handleAlterarSuccess();
 		},
 		onError: (error) => {
+			props.handleAlterarError();
 			console.log(error);
 		},
 	});
