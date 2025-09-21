@@ -8,6 +8,7 @@ import Toast from "../components/Toast";
 import EditDespesa from "../components/EditDespesa";
 import DeleteDespesa from "../components/DeleteDespesa";
 import { useToast } from "../hooks/useToast";
+import { Search } from "lucide-react";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -20,8 +21,6 @@ export default function ListasDespesas() {
 			return response.data;
 		},
 	});
-
-	console.log("merda\n\n\n\n\n", data)
 
 	const [editingId, setEditingId] = useState(null);
 	const [deletingId, setDeletingId] = useState(null);
@@ -71,14 +70,24 @@ export default function ListasDespesas() {
 				message={deleteToast.message}
 			/>
 
-			<Header
-				title="Lista de Despesas"
-				p="Aqui aparecerá a lista de suas despesas"
-				back={true}
-			/>
+			<div className="flex flex-row justify-between items-center">
+				<Header
+					title="Lista de Despesas"
+					p="Aqui aparecerá a lista de suas despesas"
+					back={true}
+				/>
 
-			{isLoading && <p>carregando, bro</p>}
-			{isError && <p>porra</p>}
+				<div className="flex flex-row gap-3">
+					<input type="text" className="rounded-md py-1 px-2 border-none outline-none bg-gray-700 text-white" />
+					<Search cursor='pointer' color="white" strokeWidth={3} />
+				</div>
+			</div>
+
+			{isLoading && <p className="text-center">carregando, bro</p>}
+			{isError && <p className="text-center">porra</p>}
+			{data?.empty && (
+				<p className="text-center">Sem despesas para listar</p>
+			)}
 
 			<div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{data?.content?.map((item) => (

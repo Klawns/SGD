@@ -12,7 +12,7 @@ export default function AddDespesas() {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isError, setIsError] = useState(false);
 
-	const { control, handleSubmit, watch, reset } = useForm({
+	const { control, handleSubmit, watch, reset, getValues } = useForm({
 		defaultValues: {
 			descricao: "",
 			valor: "",
@@ -37,7 +37,7 @@ export default function AddDespesas() {
 
 	useEffect(() => {
 		if (!formaPagamento?.toLowerCase().includes("credito")) {
-			reset({ parcelas: "" }, { keepValues: true });
+			reset({ ...getValues(), parcelas: "" });
 		}
 	}, [formaPagamento, reset]);
 
@@ -49,7 +49,14 @@ export default function AddDespesas() {
 		},
 		onSuccess: () => {
 			setIsSuccess(true);
-			reset();
+			reset({
+				descricao: "",
+				valor: "",
+				data: "",
+				categoria: "",
+				formaPagamento: "",
+				parcelas: "",
+			});
 		},
 		onError: () => {
 			setIsError(true);

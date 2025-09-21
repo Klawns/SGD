@@ -1,9 +1,11 @@
 import Button from "../components/Button";
-import { House, CirclePlus, List, BarChart3 } from "lucide-react";
+import { CircleUser, CirclePlus, List, BarChart3 } from "lucide-react";
+
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      
       <div className="container mx-auto px-6 py-16">
         <div className="flex flex-col items-center justify-center min-h-[80vh]">
           <div className="text-center mb-12">
@@ -15,8 +17,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
-            {/* <Button icon={House} text="Dashboard" path="/" variant="primary" /> */}
+          <div className="grid grid-cols-4  gap-4 max-w-4xl w-full">
             <Button
               icon={CirclePlus}
               text="Adicionar Despesa"
@@ -37,6 +38,15 @@ export default function Home() {
               variant="secondary"
               className="flex-1"
             />
+
+            <Button
+              icon={CircleUser}
+              text="Conta"
+              path="/conta"
+              variant="secondary"
+              className="flex-1"
+            />
+   
           </div>
         </div>
       </div>

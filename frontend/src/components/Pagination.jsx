@@ -10,6 +10,7 @@ export default function Pagination({ currentPage, setCurrentPage, totalPages }) 
 		<div className="absolute left-[50%] translate-x-[-50%] top-[85%]">
 			<div className="flex gap-1">
 				<button
+					className="bg-blue-600 text-white font-bold px-4 py-2 rounded-[7px]"
 					onClick={() => changePage(currentPage - 1)}
 					disabled={currentPage === 1}
 				>
@@ -19,8 +20,8 @@ export default function Pagination({ currentPage, setCurrentPage, totalPages }) 
 				{rangePages(totalPages, currentPage).map((page, index) =>
 					typeof page === "number" ? (
 						<button
-							className={`bg-black text-white font-bold px-4 py-2 rounded-[7px] ${
-								currentPage === page ? "bg-blue-600" : ""
+							className={`bg-blue-700 text-white font-bold px-4 py-2 rounded-[7px] ${
+								currentPage === page ? "bg-blue-900" : ""
 							}`}
 							onClick={() => setCurrentPage(page)}
 							key={index}
@@ -35,6 +36,7 @@ export default function Pagination({ currentPage, setCurrentPage, totalPages }) 
 				)}
 
 				<button
+					className="bg-blue-600 text-white font-bold px-4 py-2 rounded-[7px]"
 					onClick={() => changePage(currentPage + 1)}
 					disabled={currentPage === totalPages}
 				>

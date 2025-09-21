@@ -1,6 +1,7 @@
 package dev.svictorsena.sgd.config;
 
 import dev.svictorsena.sgd.security.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +49,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // necessário para HttpOnly cookie
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5174")); // frontend
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // frontend
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 

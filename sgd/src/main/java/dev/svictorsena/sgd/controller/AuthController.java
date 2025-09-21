@@ -46,7 +46,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData, HttpServletResponse response) {
         try {
@@ -71,6 +70,19 @@ public class AuthController {
 //            return ResponseEntity.status(401).body("Usuário ou senha inválidos.");
             return ResponseEntity.status(401).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Remove o cookie JWT
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // se estiver usando HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // remove imediatamente
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logout realizado com sucesso!");
     }
 
     @GetMapping("/me")
