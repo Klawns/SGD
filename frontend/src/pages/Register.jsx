@@ -8,6 +8,7 @@ import Toast from "../components/Toast";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import ShowPasswordButton from "../components/ShowPasswordButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +50,9 @@ export default function Register() {
 
 	const registerToast = useToast();
 
+	const navigate = useNavigate()
 	const handleRegisterSuccess = () => {
+		navigate("/login")
 		registerToast.trigger({
 			type: "success",
 			message: "Registro realizado com sucesso!",

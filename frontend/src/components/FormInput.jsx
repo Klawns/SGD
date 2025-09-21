@@ -8,7 +8,7 @@ export default function FormInput({ name, control, rules, label, type = "text", 
       control={control}
       rules={rules}
       render={({ field, fieldState }) => (
-        <>
+        <div className="w-full">
           <Input
             {...field}
             label={label}
@@ -17,9 +17,9 @@ export default function FormInput({ name, control, rules, label, type = "text", 
             variant="textWhite"
           />
           {fieldState.error && (
-            <p className="-mt-3 text-red-500 text-sm">{fieldState.error.message}</p>
+            <p className="absolute text-red-500 text-sm">{fieldState.error.message}</p>
           )}
-        </>
+        </div>
       )}
     />
   );

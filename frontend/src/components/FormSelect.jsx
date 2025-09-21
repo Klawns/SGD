@@ -8,7 +8,7 @@ export default function FormSelect({ name, control, rules, label, options }) {
 			control={control}
 			rules={rules}
 			render={({ field, fieldState }) => (
-				<>
+				<div>
 					<Select
 						label={label}
 						options={options}
@@ -16,11 +16,11 @@ export default function FormSelect({ name, control, rules, label, options }) {
 						{...field}
 					/>
 					{fieldState.error && (
-						<p className="-mt-3 text-red-500 text-sm">
+						<p className="absolute text-red-500 text-sm">
 							{fieldState.error.message}
 						</p>
 					)}
-				</>
+				</div>
 			)}
 		/>
 	);

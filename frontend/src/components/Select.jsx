@@ -25,7 +25,7 @@ export default function Select({
 	const v = variants[variant] ?? variants.textWhite;
 
 	return (
-		<div className="w-full">
+		<div className="mt-2 w-full">
 			<label className={`${v.label} block text-sm font-medium mb-2`}>
 				{label}
 			</label>
