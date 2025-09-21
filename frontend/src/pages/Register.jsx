@@ -5,8 +5,12 @@ import Header from "../components/Header";
 import api from "../services/api";
 import { useToast } from "../hooks/useToast";
 import Toast from "../components/Toast";
+import { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 
 export default function Register() {
+	const [showPassword, setShowPassword] = useState(false);
+
 	const { control, handleSubmit, watch } = useForm({
 		defaultValues: {
 			usuario: "",
@@ -25,9 +29,9 @@ export default function Register() {
 				return response;
 			} catch (error) {
 				if (error.response) {
-					throw error.response
+					throw error.response;
 				}
-				throw error
+				throw error;
 			}
 		},
 		onSuccess: (response) => {
@@ -79,18 +83,40 @@ export default function Register() {
 						<FormInput
 							name="usuario"
 							control={control}
-							rules={{ required: "Usuário é obrigatória", validate: (value) => !value.includes(" ") || "Usuário não pode ter espaço"  }}
+							rules={{
+								required: "Usuário é obrigatória",
+								validate: (value) =>
+									!value.includes(" ") ||
+									"Usuário não pode ter espaço",
+							}}
 							label="Usuário"
 							placeholder="Crie um nome de usuário"
 						/>
-						<FormInput
-							name="senha"
-							control={control}
-							rules={{ required: "Senha é obrigatória" }}
-							label="Senha"
-							type="password"
-							placeholder="Crie uma senha"
-						/>
+						<div className="relative flex flex-row items-en">
+							<FormInput
+								name="senha"
+								control={control}
+								rules={{ required: "Senha é obrigatória" }}
+								label="Senha"
+								type={showPassword ? "text" : "password"}
+								placeholder="Crie sua senha"
+							/>
+							{showPassword ? (
+								<Eye
+									onClick={() => setShowPassword(false)}
+									className="absolute right-2 bottom-1 cursor-pointer"
+									size={30}
+									color="white"
+								/>
+							) : (
+								<EyeClosed
+									onClick={() => setShowPassword(true)}
+									className="absolute right-2 bottom-1 cursor-pointer"
+									size={30}
+									color="white"
+								/>
+							)}
+						</div>
 						<FormInput
 							name="confirmSenha"
 							control={control}

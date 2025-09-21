@@ -6,8 +6,12 @@ import api from "../services/api";
 import { useToast } from "../hooks/useToast";
 import Toast from "../components/Toast";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 export default function Login() {
+	const [showPassword, setShowPassword] = useState(false)
+
 	const { control, handleSubmit, watch } = useForm({
 		defaultValues: {
 			usuario: "",
@@ -43,14 +47,14 @@ export default function Login() {
 
 	const loginToast = useToast();
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const handleLoginSuccess = () => {
 		loginToast.trigger({
 			type: "success",
 			message: "Login com sucesso!",
 		});
-		navigate("/")
+		navigate("/");
 	};
 
 	const handleLoginError = (err) => {
@@ -85,14 +89,31 @@ export default function Login() {
 							label="Usuário"
 							placeholder="Digite seu usuário"
 						/>
-						<FormInput
-							name="senha"
-							control={control}
-							rules={{ required: "Senha é obrigatória" }}
-							label="Senha"
-							type="password"
-							placeholder="Digite sua senha"
-						/>
+						<div className="relative flex flex-row items-en">
+							<FormInput
+								name="senha"
+								control={control}
+								rules={{ required: "Senha é obrigatória" }}
+								label="Senha"
+								type={showPassword ? "text" : "password"}
+								placeholder="Digite sua senha"
+							/>
+							{showPassword ? (
+								<Eye
+									onClick={() => setShowPassword(false)}
+									className="absolute right-2 bottom-1 cursor-pointer"
+									size={30}
+									color="white"
+								/>
+							) : (
+								<EyeClosed
+									onClick={() => setShowPassword(true)}
+									className="absolute right-2 bottom-1 cursor-pointer"
+									size={30}
+									color="white"
+								/>
+							)}
+						</div>
 
 						<p className="text-gray-400 text-sm text-center">
 							Não tem conta?{" "}
