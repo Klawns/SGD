@@ -17,7 +17,7 @@ export default function FormInput({ name, control, rules, label, type = "text", 
             variant="textWhite"
           />
           {fieldState.error && (
-            <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+            <p className="-mt-3 text-red-500 text-sm">{fieldState.error.message}</p>
           )}
         </>
       )}

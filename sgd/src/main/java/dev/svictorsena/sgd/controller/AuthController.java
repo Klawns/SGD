@@ -66,20 +66,17 @@ public class AuthController {
             response.addCookie(cookie);
             return ResponseEntity.ok("Login realizado com sucesso");
         } catch (Exception e) {
-            // Login falhou
-//            return ResponseEntity.status(401).body("Usuário ou senha inválidos.");
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        // Remove o cookie JWT
         Cookie cookie = new Cookie("token", null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // se estiver usando HTTPS
+        cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setMaxAge(0); // remove imediatamente
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logout realizado com sucesso!");

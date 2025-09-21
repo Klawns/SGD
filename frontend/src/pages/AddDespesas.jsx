@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Toast from "../components/Toast";
 import FormInput from "../components/FormInput";
 import FormSelect from "../components/FormSelect";
+import { formatDateBR } from "../utils/formateDateBR";
 
 export default function AddDespesas() {
 	const [isSuccess, setIsSuccess] = useState(false);
@@ -22,6 +23,8 @@ export default function AddDespesas() {
 			parcelas: "",
 		},
 	});
+
+	console.log(watch("data"));
 
 	useEffect(() => {
 		if (isSuccess || isError) {
@@ -67,6 +70,7 @@ export default function AddDespesas() {
 
 	const normalizeData = (data) => ({
 		...data,
+		data: formatDateBR(data.data),
 		valor: parseFloat(data.valor),
 		parcelas: data.parcelas ? Number(data.parcelas) : 0,
 	});
@@ -98,7 +102,7 @@ export default function AddDespesas() {
 						<FormInput
 							name="descricao"
 							control={control}
-							rules={{ required: "Descrição é obrigatória" }}
+							rules={{ required: "Descrição é obrigatória"}}
 							label="Descrição"
 							placeholder="Adicione a descrição"
 						/>
@@ -115,7 +119,7 @@ export default function AddDespesas() {
 						<FormInput
 							name="data"
 							control={control}
-							rules={{ required: "Data é obrigatória" }}
+							rules={{ required: "Data é obrigatória", validate: (value) => !(new Date(value) > new Date()) || "Data inválida" }}
 							label="Data"
 							type="date"
 							placeholder="Coloque a data"

@@ -29,7 +29,7 @@ export default function Pagination({ currentPage, setCurrentPage, totalPages }) 
 							{page}
 						</button>
 					) : (
-						<span key={index} className="px-2 py-2">
+						<span key={index} className="px-2 py-2 text-white">
 							...
 						</span>
 					)

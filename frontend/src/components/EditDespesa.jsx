@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import FormInput from "./FormInput";
 import FormSelect from "./FormSelect";
 import { constants } from "../constants/constants";
+import { formatDateBR } from "../utils/formateDateBR";
+import { formatDate } from "../utils/formatDate";
 
 export default function EditDespesa({
 	despesa,
@@ -16,7 +18,7 @@ export default function EditDespesa({
 		defaultValues: {
 			descricao: despesa.descricao || "",
 			valor: despesa.valor || "",
-			data: despesa.data || "",
+			data: formatDate(despesa.data) || "",
 			categoria: despesa.categoria || "",
 			formaPagamento: despesa.formaPagamento || "",
 			parcelas: despesa.parcelas || "",
@@ -27,6 +29,7 @@ export default function EditDespesa({
 
 	const normalizeData = (data) => ({
 		...data,
+		data: formatDateBR(data.data),
 		valor: parseFloat(data.valor),
 		parcelas: data.parcelas ? Number(data.parcelas) : 0,
 	});
@@ -79,7 +82,12 @@ export default function EditDespesa({
 					<FormInput
 						name="data"
 						control={control}
-						rules={{ required: "Data é obrigatória" }}
+						rules={{
+							required: "Data é obrigatória",
+							validate: (value) =>
+								!(new Date(value) > new Date()) ||
+								"Data inválida",
+						}}
 						label="Data"
 						type="date"
 					/>

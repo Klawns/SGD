@@ -23,15 +23,17 @@ public class DespesasController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Listar apenas as despesas do usuário logado
     @GetMapping
-    public Page<Despesas> listAllDespesas(@PageableDefault(size = 9, page = 0) Pageable pageable,
-                                          Authentication authentication) {
+    public Page<Despesas> listAllDespesas(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 9) Pageable pageable,
+            Authentication authentication) {
+
         String username = authentication.getName();
-        return despesasService.getDespesasByUsuario(username, pageable);
+
+        return despesasService.getDespesasByUsuarioAndSearch(username, search, pageable);
     }
 
-    // Criar despesa associada ao usuário logado
     @PostMapping
     public Despesas addDespesas(@RequestBody Despesas despesas, Authentication authentication) {
         String username = authentication.getName();
@@ -40,7 +42,6 @@ public class DespesasController {
         return despesasService.createDespesas(despesas);
     }
 
-    // Deletar despesa (você pode adicionar verificação se a despesa pertence ao usuário)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDespesas(@PathVariable Long id, Authentication authentication) {
         String username = authentication.getName();
@@ -48,11 +49,10 @@ public class DespesasController {
         if (deleted) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(403).build(); // Forbidden se não for do usuário
+            return ResponseEntity.status(403).build();
         }
     }
 
-    // Editar despesa (somente se for do usuário)
     @PutMapping("/{id}")
     public ResponseEntity<Despesas> editarDespesas(@PathVariable Long id,
                                                    @RequestBody Despesas despesas,

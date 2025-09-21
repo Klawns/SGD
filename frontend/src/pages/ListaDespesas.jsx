@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import CardDespesa from "../components/Card";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/Pagination";
 import api from "../services/api";
 import Toast from "../components/Toast";
@@ -9,18 +9,45 @@ import EditDespesa from "../components/EditDespesa";
 import DeleteDespesa from "../components/DeleteDespesa";
 import { useToast } from "../hooks/useToast";
 import { Search } from "lucide-react";
+import { formatDateBR } from "../utils/formateDateBR";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
+	const [dataInicio, setDataInicio] = useState("");
+	const [dataFim, setDataFim] = useState("");
+	const [searchTerm, setSearchTerm] = useState("");
+
 	const { data, isLoading, isError } = useQuery({
-		queryKey: ["despesas", currentPage],
+		queryKey: ["despesas", currentPage, dataInicio, dataFim, searchTerm],
 		queryFn: async () => {
+			let searchParam = "";
+
+			if (dataInicio && dataFim) {
+				searchParam = `${formatDateBR(dataInicio)} - ${formatDateBR(
+					dataFim
+				)}`;
+			} else if (dataInicio) {
+				searchParam = formatDateBR(dataInicio);
+			} else {
+				searchParam = searchTerm;
+			}
+
 			const response = await api.get("/despesas", {
-				params: { page: currentPage - 1 },
+				params: {
+					page: currentPage - 1,
+					search: searchParam,
+				},
 			});
+
 			return response.data;
 		},
 	});
+
+	const queryClient = useQueryClient();
+
+	useEffect(() => {
+		queryClient.invalidateQueries(["despesas"]);
+	}, [currentPage, dataInicio, dataFim, searchTerm]);
 
 	const [editingId, setEditingId] = useState(null);
 	const [deletingId, setDeletingId] = useState(null);
@@ -77,9 +104,35 @@ export default function ListasDespesas() {
 					back={true}
 				/>
 
-				<div className="flex flex-row gap-3">
-					<input type="text" className="rounded-md py-1 px-2 border-none outline-none bg-gray-700 text-white" />
-					<Search cursor='pointer' color="white" strokeWidth={3} />
+				<div className="flex flex-row gap-3 items-center">
+					<input
+						className="bg-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors"
+						type="date"
+						onChange={(e) => setDataInicio(e.target.value)}
+						name=""
+						id=""
+					/>
+					<input
+						className="bg-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors"
+						type="date"
+						onChange={(e) => setDataFim(e.target.value)}
+						name=""
+						id=""
+					/>
+					<input
+						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchTerm}
+						type="text"
+						className="rounded-md py-2 px-3 border-none outline-none bg-gray-700 text-white"
+					/>
+					<Search
+						cursor="pointer"
+						color="white"
+						strokeWidth={3}
+						onClick={() =>
+							queryClient.invalidateQueries(["despesas"])
+						}
+					/>
 				</div>
 			</div>
 

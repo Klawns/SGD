@@ -1,10 +1,13 @@
 package dev.svictorsena.sgd.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name="despesas")
@@ -16,7 +19,8 @@ public class Despesas {
     private Long id;
     private String descricao;
     private double valor;
-    private String data;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate data;
     private String categoria;
     private String formaPagamento;
     @Nullable

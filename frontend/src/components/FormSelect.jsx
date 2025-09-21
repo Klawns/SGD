@@ -16,7 +16,7 @@ export default function FormSelect({ name, control, rules, label, options }) {
 						{...field}
 					/>
 					{fieldState.error && (
-						<p className="text-red-500 text-sm">
+						<p className="-mt-3 text-red-500 text-sm">
 							{fieldState.error.message}
 						</p>
 					)}

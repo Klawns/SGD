@@ -79,7 +79,7 @@ export default function Register() {
 						<FormInput
 							name="usuario"
 							control={control}
-							rules={{ required: "Usuário é obrigatória" }}
+							rules={{ required: "Usuário é obrigatória", validate: (value) => !value.includes(" ") || "Usuário não pode ter espaço"  }}
 							label="Usuário"
 							placeholder="Crie um nome de usuário"
 						/>

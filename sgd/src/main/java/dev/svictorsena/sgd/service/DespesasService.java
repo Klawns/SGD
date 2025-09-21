@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @Service
@@ -15,17 +18,44 @@ public class DespesasService {
     @Autowired
     private DespesasRepository despesasRepository;
 
-    // Listar despesas do usuário
-    public Page<Despesas> getDespesasByUsuario(String username, Pageable pageable) {
-        return despesasRepository.findByUsuarioUsername(username, pageable);
+    public Page<Despesas> getDespesasByUsuarioAndSearch(
+            String username,
+            String search,
+            Pageable pageable
+    ) {
+        if (search == null || search.isEmpty()) {
+            return despesasRepository.findByUsuarioUsername(username, pageable);
+        }
+
+        search = search.trim();
+
+        try {
+            if (search.contains("-")) {
+                String[] parts = search.split("-");
+                LocalDate dataInicio = LocalDate.parse(parts[0].trim(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                LocalDate dataFim = LocalDate.parse(parts[1].trim(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                return despesasRepository.findByUsuarioUsernameAndDataBetween(username, dataInicio, dataFim, pageable);
+            }
+
+            try {
+                LocalDate dataInicio = LocalDate.parse(search, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                return despesasRepository.findByUsuarioUsernameAndDataGreaterThanEqual(username, dataInicio, pageable);
+            } catch (DateTimeParseException ignored) {
+            }
+
+        } catch (DateTimeParseException e) {
+        }
+
+        return despesasRepository
+                .findByUsuarioUsernameAndDescricaoContainingIgnoreCaseOrCategoriaContainingIgnoreCaseOrFormaPagamentoContainingIgnoreCase(
+                        username, search, search, search, pageable
+                );
     }
 
-    // Criar despesa (usuario já deve estar setado)
     public Despesas createDespesas(Despesas despesas) {
         return despesasRepository.save(despesas);
     }
 
-    // Deletar despesa apenas se pertence ao usuário
     public boolean deleteDespesasIfBelongsToUser(Long id, String username) {
         Optional<Despesas> despesaOpt = despesasRepository.findById(id);
         if (despesaOpt.isPresent() && despesaOpt.get().getUsuario().getUsername().equals(username)) {
@@ -35,7 +65,6 @@ public class DespesasService {
         return false;
     }
 
-    // Atualizar despesa apenas se pertence ao usuário
     public Optional<Despesas> updateDespesasIfBelongsToUser(Long id, Despesas despesas, String username) {
         return despesasRepository.findById(id)
                 .filter(existing -> existing.getUsuario().getUsername().equals(username))

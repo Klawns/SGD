@@ -44,7 +44,6 @@ public class UsuarioController {
                                            HttpServletRequest request,
                                            HttpServletResponse response) {
 
-        // Pega o username atual do token
         String usernameAtual = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
