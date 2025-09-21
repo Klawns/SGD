@@ -122,7 +122,6 @@ export default function AddDespesas() {
 							rules={{ required: "Data é obrigatória", validate: (value) => !(new Date(value) > new Date()) || "Data inválida" }}
 							label="Data"
 							type="date"
-							placeholder="Coloque a data"
 						/>
 
 						<FormSelect

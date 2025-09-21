@@ -2,15 +2,26 @@ package dev.svictorsena.sgd.controller;
 
 import dev.svictorsena.sgd.model.Despesas;
 import dev.svictorsena.sgd.model.Usuario;
+import dev.svictorsena.sgd.repository.DespesasRepository;
 import dev.svictorsena.sgd.repository.UsuarioRepository;
 import dev.svictorsena.sgd.service.DespesasService;
+import dev.svictorsena.sgd.service.RelatorioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/despesas")
@@ -19,6 +30,12 @@ public class DespesasController {
 
     @Autowired
     private DespesasService despesasService;
+
+    @Autowired
+    private RelatorioService relatorioService;
+
+    @Autowired
+    private DespesasRepository despesasRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -62,4 +79,28 @@ public class DespesasController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(403).build());
     }
+
+    @GetMapping("/relatorio")
+    public ResponseEntity<byte[]> downloadRelatorio(
+            @RequestParam String dataInicial,
+            @RequestParam String dataFinal,
+            Authentication authentication) throws IOException {
+
+        String username = authentication.getName();
+
+        LocalDate inicio = LocalDate.parse(dataInicial);
+        LocalDate fim = LocalDate.parse(dataFinal);
+
+        List<Despesas> despesas = despesasRepository
+                .findAllByUsuarioUsernameAndDataBetween(username, inicio, fim, Sort.by(Sort.Direction.ASC, "data"));
+
+        ByteArrayInputStream in = relatorioService.gerarRelatorio(despesas);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=despesas.xlsx")
+                .contentType(MediaType.parseMediaType(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(in.readAllBytes());
+    }
+
 }
