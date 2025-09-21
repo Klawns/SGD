@@ -7,6 +7,7 @@ import { useToast } from "../hooks/useToast";
 import Toast from "../components/Toast";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+import ShowPasswordButton from "../components/ShowPasswordButton";
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -101,21 +102,7 @@ export default function Register() {
 								type={showPassword ? "text" : "password"}
 								placeholder="Crie sua senha"
 							/>
-							{showPassword ? (
-								<Eye
-									onClick={() => setShowPassword(false)}
-									className="absolute right-2 bottom-1 cursor-pointer"
-									size={30}
-									color="white"
-								/>
-							) : (
-								<EyeClosed
-									onClick={() => setShowPassword(true)}
-									className="absolute right-2 bottom-1 cursor-pointer"
-									size={30}
-									color="white"
-								/>
-							)}
+							<ShowPasswordButton setShowPassword={setShowPassword} showPassword={showPassword}/>
 						</div>
 						<FormInput
 							name="confirmSenha"

@@ -6,11 +6,11 @@ import api from "../services/api";
 import { useToast } from "../hooks/useToast";
 import Toast from "../components/Toast";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeClosed } from "lucide-react";
+import ShowPasswordButton from "../components/ShowPasswordButton";
 import { useState } from "react";
 
 export default function Login() {
-	const [showPassword, setShowPassword] = useState(false)
+	const [showPassword, setShowPassword] = useState(false);
 
 	const { control, handleSubmit, watch } = useForm({
 		defaultValues: {
@@ -98,21 +98,8 @@ export default function Login() {
 								type={showPassword ? "text" : "password"}
 								placeholder="Digite sua senha"
 							/>
-							{showPassword ? (
-								<Eye
-									onClick={() => setShowPassword(false)}
-									className="absolute right-2 bottom-1 cursor-pointer"
-									size={30}
-									color="white"
-								/>
-							) : (
-								<EyeClosed
-									onClick={() => setShowPassword(true)}
-									className="absolute right-2 bottom-1 cursor-pointer"
-									size={30}
-									color="white"
-								/>
-							)}
+							<ShowPasswordButton showPassword={showPassword} setShowPassword={setShowPassword} />
+
 						</div>
 
 						<p className="text-gray-400 text-sm text-center">
