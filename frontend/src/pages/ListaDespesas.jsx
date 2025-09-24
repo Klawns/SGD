@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import CardDespesa from "../components/Card";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/Pagination";
 import api from "../services/api";
@@ -8,8 +8,10 @@ import Toast from "../components/Toast";
 import EditDespesa from "../components/EditDespesa";
 import DeleteDespesa from "../components/DeleteDespesa";
 import { useToast } from "../hooks/useToast";
-import { Search } from "lucide-react";
+import { Search, CirclePlus } from "lucide-react";
 import { formatDateBR } from "../utils/formateDateBR";
+import Button from "../components/Button";
+import DespesaMessage from "../components/DespesasMessage";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -136,10 +138,20 @@ export default function ListasDespesas() {
 				</div>
 			</div>
 
-			{isLoading && <p className="text-center">carregando, bro</p>}
-			{isError && <p className="text-center">porra</p>}
+			{isLoading && <DespesaMessage message="Carregando despesas..." />}
+			{isError && (
+				<DespesaMessage message="Não foi possível listar as despesas" />
+			)}
 			{data?.empty && (
-				<p className="text-center">Sem despesas para listar</p>
+				<div>
+					<DespesaMessage message="Sem despesas para listar">
+						<Button
+							icon={CirclePlus}
+							text="Adicionar Despesa"
+							path="/adicionar-despesas"
+						/>
+					</DespesaMessage>
+				</div>
 			)}
 
 			<div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

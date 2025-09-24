@@ -2,6 +2,7 @@ package dev.svictorsena.sgd.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,17 +18,28 @@ public class Despesas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String descricao;
+
+    @Column(nullable = false)
     private double valor;
+
+    @Column(nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate data;
+
+    @Column(nullable = false)
     private String categoria;
+
+    @Column(nullable = false)
     private String formaPagamento;
-    @Nullable
+
+    @Column(nullable = true)
     private int parcelas;
 
-    @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonBackReference
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 }

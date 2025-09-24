@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -56,14 +57,12 @@ public class AuthController {
                     )
             );
 
-            System.out.println("Porra: " + auth);
-
             String token = jwtUtil.gerarToken(auth.getName());
 
             Cookie cookie = new Cookie("token", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
-            cookie.setMaxAge(3600); // 1 hora
+            cookie.setMaxAge(3600);
             cookie.setSecure(true);
             cookie.setAttribute("SameSite", "Strict");
             response.addCookie(cookie);
@@ -75,11 +74,14 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+
         Cookie cookie = new Cookie("token", null);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
+        cookie.setAttribute("SameSite", "Strict");
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logout realizado com sucesso!");
