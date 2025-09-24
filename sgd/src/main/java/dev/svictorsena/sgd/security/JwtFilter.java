@@ -19,8 +19,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
-    @Autowired
-    private UsuarioDetailsService usuarioDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -31,9 +29,8 @@ public class JwtFilter extends OncePerRequestFilter {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String username = jwtUtil.extrairUsername(cookie.getValue());
-                    UserDetails userDetails = usuarioDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(username, null, null);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }

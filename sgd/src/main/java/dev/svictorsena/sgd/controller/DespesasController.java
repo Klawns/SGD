@@ -96,8 +96,12 @@ public class DespesasController {
 
         ByteArrayInputStream in = relatorioService.gerarRelatorio(despesas);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        String filename = "despesas__" + inicio.format(formatter) + "__" + fim.format(formatter) + ".xlsx";
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=despesas.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType(
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(in.readAllBytes());

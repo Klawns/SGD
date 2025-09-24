@@ -43,8 +43,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 //
 //        // Gera novo token JWT
-        String novoToken = jwtUtil.gerarToken(new org.springframework.security.core.userdetails.User(
-                usuario.getUsername(), usuario.getPassword(), new ArrayList<>()));
+        String novoToken = jwtUtil.gerarToken(usuarioAtualizado.getUsername());
 //
 //
 //        // Atualiza cookie

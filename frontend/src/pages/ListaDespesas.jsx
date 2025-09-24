@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import CardDespesa from "../components/Card";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/Pagination";
 import api from "../services/api";

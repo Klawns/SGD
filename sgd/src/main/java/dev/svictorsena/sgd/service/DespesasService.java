@@ -30,6 +30,10 @@ public class DespesasService {
         search = search.trim();
 
         try {
+            return despesasRepository.findByUsuarioUsernameAndValor(username, Double.parseDouble(search), pageable);
+        } catch (NumberFormatException e) {}
+
+        try {
             if (search.contains("-")) {
                 String[] parts = search.split("-");
                 LocalDate dataInicio = LocalDate.parse(parts[0].trim(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -78,4 +82,5 @@ public class DespesasService {
                     return despesasRepository.save(existing);
                 });
     }
+
 }

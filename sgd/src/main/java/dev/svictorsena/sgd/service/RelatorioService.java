@@ -24,7 +24,9 @@ public class RelatorioService {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Despesas");
 
-            Row header = sheet.createRow(0);
+            Row header = sheet.createRow(1);
+            Row pinta = sheet.createRow(0);
+            pinta.createCell(0).setCellValue("Despesas Malucas");
             String[] colunas = {"Descrição", "Categoria", "Valor", "Forma de Pagamento", "Data"};
 
             CellStyle style = workbook.createCellStyle();
@@ -37,9 +39,11 @@ public class RelatorioService {
                 cell.setCellStyle(style);
             }
 
+            Double totalValor = 0.0;
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            int rowIdx = 1;
+            int rowIdx = 2;
             for (Despesas d : despesas) {
                 Row row = sheet.createRow(rowIdx++);
 
@@ -62,7 +66,16 @@ public class RelatorioService {
                 Cell cell4 = row.createCell(4);
                 cell4.setCellValue(d.getData().format(formatter));
                 cell4.setCellStyle(style);
+
+                totalValor += d.getValor();
             }
+
+            Row row = sheet.createRow(rowIdx+1);
+            row.createCell(0).setCellValue("Total");
+
+            Row rowValue = sheet.createRow(rowIdx+2);
+            rowValue.createCell(0).setCellValue(totalValor);
+
 
             for (int i = 0; i < colunas.length; i++) {
                 sheet.autoSizeColumn(i);

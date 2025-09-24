@@ -56,13 +56,16 @@ public class AuthController {
                     )
             );
 
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            String token = jwtUtil.gerarToken(userDetails);
+            System.out.println("Porra: " + auth);
+
+            String token = jwtUtil.gerarToken(auth.getName());
 
             Cookie cookie = new Cookie("token", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             cookie.setMaxAge(3600); // 1 hora
+            cookie.setSecure(true);
+            cookie.setAttribute("SameSite", "Strict");
             response.addCookie(cookie);
             return ResponseEntity.ok("Login realizado com sucesso");
         } catch (Exception e) {
