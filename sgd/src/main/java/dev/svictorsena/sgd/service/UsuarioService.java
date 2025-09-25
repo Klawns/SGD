@@ -24,6 +24,11 @@ public class UsuarioService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    public void createUsario(Usuario usuario) { //service criar usuario // recebe usuario vindo do authService registerUsuario
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); //altera a senha do usuario para senha encriptada
+        usuarioRepository.save(usuario); //salva o usuario no banco de dados
+    }
+
     public ResponseEntity<?> updateUsuario(Usuario usuarioAtualizado, String usernameAtual, HttpServletResponse response) {
         // Pega o usuário atual
         Usuario usuario = usuarioRepository.findByUsername(usernameAtual)

@@ -3,69 +3,41 @@ package dev.svictorsena.sgd.controller;
 import dev.svictorsena.sgd.model.Usuario;
 import dev.svictorsena.sgd.repository.UsuarioRepository;
 import dev.svictorsena.sgd.security.JwtUtil;
+import dev.svictorsena.sgd.service.AuthService;
+import dev.svictorsena.sgd.service.UsuarioService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
     @Autowired
     private JwtUtil jwtUtil;
+    
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Usuario usuario) {
-        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-            return ResponseEntity.status(400).body("Usuário já existe!");
-        }
-
+    public ResponseEntity<?> register(@RequestBody Usuario usuario) {//endpoint register que recebe usuario (username e senha) do front
         try {
-            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-            usuarioRepository.save(usuario);
-            return ResponseEntity.ok("Usuário criado com sucesso!");
+            return authService.registerUsuario(usuario); //chama registerUsuario passando como parametro usuario
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(usuario);
+            return  ResponseEntity.badRequest().build();
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody Usuario usuario, HttpServletResponse response) {
         try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginData.get("username"),
-                            loginData.get("password")
-                    )
-            );
-
-            String token = jwtUtil.gerarToken(auth.getName());
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(3600);
-            cookie.setSecure(true);
-            cookie.setAttribute("SameSite", "Strict");
-            response.addCookie(cookie);
+            authService.loginUsuario(usuario, response);
             return ResponseEntity.ok("Login realizado com sucesso");
         } catch (Exception e) {
             return ResponseEntity.status(401).body(e.getMessage());
@@ -74,17 +46,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        SecurityContextHolder.clearContext();
-
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        cookie.setAttribute("SameSite", "Strict");
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok("Logout realizado com sucesso!");
+        try {
+            authService.logoutUsuario(response);
+            return ResponseEntity.ok("Logout realizado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Não foi possível realizar logout.");
+        }
     }
 
     @GetMapping("/me")
