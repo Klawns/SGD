@@ -10,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.security.cert.CertificateRevokedException;
 
 @Service
 public class AuthService {
@@ -28,28 +31,34 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public ResponseEntity<String> registerUsuario(Usuario usuario) {//recebe usuario do endpoint register
+    public Usuario registerUsuario(Usuario usuario) {//recebe usuario do endpoint register
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {//verifica se o usuario existe
-            return ResponseEntity.status(400).body("Usuário já existe!");//se existe, retorna que ja existe
+            throw new RuntimeException("Usuário já existe.");
+//            return ResponseEntity.status(400).body("Usuário já existe!");//se existe, retorna que ja existe
         }
 
-        usuarioService.createUsario(usuario);//chama createUsuario passando como parametro usuario
-        return ResponseEntity.ok("Usuário registrado com sucesso!");//retorna que deu certo
-
+        return usuarioService.createUsario(usuario);//chama createUsuario passando como parametro usuario
+//        return ResponseEntity.ok("Usuário registrado com sucesso!");//retorna que deu certo
     }
 
     public void loginUsuario(Usuario usuario, HttpServletResponse response) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword()));
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword())
+            );
 
-        String token = jwtUtil.gerarToken(auth.getName());
+            String token = jwtUtil.gerarToken(auth.getName());
 
-        Cookie cookie = new Cookie("token", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        cookie.setSecure(true);
-        cookie.setAttribute("SameSite", "Strict");
-        response.addCookie(cookie);
+            Cookie cookie = new Cookie("token", token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(3600);
+            cookie.setSecure(true);
+            cookie.setAttribute("SameSite", "Strict");
+            response.addCookie(cookie);
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("Usuário ou senha inválidos");
+        }
     }
 
     public void logoutUsuario(HttpServletResponse response) {

@@ -24,9 +24,9 @@ public class UsuarioService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public void createUsario(Usuario usuario) { //service criar usuario // recebe usuario vindo do authService registerUsuario
+    public Usuario createUsario(Usuario usuario) { //service criar usuario // recebe usuario vindo do authService registerUsuario
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); //altera a senha do usuario para senha encriptada
-        usuarioRepository.save(usuario); //salva o usuario no banco de dados
+        return usuarioRepository.save(usuario); //salva o usuario no banco de dados
     }
 
     public ResponseEntity<?> updateUsuario(Usuario usuarioAtualizado, String usernameAtual, HttpServletResponse response) {
@@ -46,12 +46,9 @@ public class UsuarioService {
         }
 
         usuarioRepository.save(usuario);
-//
-//        // Gera novo token JWT
+
         String novoToken = jwtUtil.gerarToken(usuarioAtualizado.getUsername());
-//
-//
-//        // Atualiza cookie
+
         Cookie cookie = new Cookie("token", novoToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");

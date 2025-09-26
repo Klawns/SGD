@@ -2,6 +2,7 @@ package dev.svictorsena.sgd.service;
 
 import dev.svictorsena.sgd.model.Despesas;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,51 @@ public class RelatorioService {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Despesas");
 
-            Row header = sheet.createRow(1);
-            Row pinta = sheet.createRow(0);
-            pinta.createCell(0).setCellValue("Despesas Malucas");
+            // === Estilos ===
+            Font titleFont = workbook.createFont();
+            titleFont.setFontHeightInPoints((short) 16);
+            titleFont.setBold(true);
+
+            CellStyle titleStyle = workbook.createCellStyle();
+            titleStyle.setFont(titleFont);
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            addBorders(headerStyle);
+
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            addBorders(cellStyle);
+
+            CellStyle currencyStyle = workbook.createCellStyle();
+            currencyStyle.setDataFormat(workbook.createDataFormat().getFormat("R$ #,##0.00"));
+            currencyStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            addBorders(currencyStyle);
+
+            CellStyle dateStyle = workbook.createCellStyle();
+            dateStyle.setDataFormat(workbook.createDataFormat().getFormat("dd/MM/yyyy"));
+            dateStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            addBorders(dateStyle);
+
+            // === Título ===
+            Row titleRow = sheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("Relatório de Despesas");
+            titleCell.setCellStyle(titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+
+            // === Cabeçalho ===
             String[] colunas = {"Descrição", "Categoria", "Valor", "Forma de Pagamento", "Data"};
+            Row header = sheet.createRow(2);
 
             CellStyle style = workbook.createCellStyle();
             style.setAlignment(HorizontalAlignment.CENTER);
@@ -36,45 +78,47 @@ public class RelatorioService {
             for (int i = 0; i < colunas.length; i++) {
                 Cell cell = header.createCell(i);
                 cell.setCellValue(colunas[i]);
-                cell.setCellStyle(style);
+                cell.setCellStyle(headerStyle);
             }
-
-            Double totalValor = 0.0;
-
+            
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            int rowIdx = 2;
+            Double totalValor = 0.0;
+            int rowIdx = 3;
             for (Despesas d : despesas) {
                 Row row = sheet.createRow(rowIdx++);
 
                 Cell cell0 = row.createCell(0);
                 cell0.setCellValue(capitalize(d.getDescricao()));
-                cell0.setCellStyle(style);
+                cell0.setCellStyle(cellStyle);
 
                 Cell cell1 = row.createCell(1);
                 cell1.setCellValue(capitalize(d.getCategoria()));
-                cell1.setCellStyle(style);
+                cell1.setCellStyle(cellStyle);
 
                 Cell cell2 = row.createCell(2);
-                cell2.setCellValue("R$ " + d.getValor());
-                cell2.setCellStyle(style);
+                cell2.setCellValue(d.getValor());
+                cell2.setCellStyle(currencyStyle);
+                totalValor += d.getValor();
 
                 Cell cell3 = row.createCell(3);
                 cell3.setCellValue(capitalize(d.getFormaPagamento()));
-                cell3.setCellStyle(style);
+                cell3.setCellStyle(cellStyle);
 
                 Cell cell4 = row.createCell(4);
                 cell4.setCellValue(d.getData().format(formatter));
-                cell4.setCellStyle(style);
-
-                totalValor += d.getValor();
+                cell4.setCellStyle(dateStyle);
             }
 
-            Row row = sheet.createRow(rowIdx+1);
-            row.createCell(0).setCellValue("Total");
+            // === Total ===
+            Row totalLabelRow = sheet.createRow(rowIdx + 1);
+            Cell totalLabel = totalLabelRow.createCell(0);
+            totalLabel.setCellValue("TOTAL:");
+            totalLabel.setCellStyle(headerStyle);
 
-            Row rowValue = sheet.createRow(rowIdx+2);
-            rowValue.createCell(0).setCellValue(totalValor);
+            Cell totalValue = totalLabelRow.createCell(1);
+            totalValue.setCellValue(totalValor);
+            totalValue.setCellStyle(currencyStyle);
 
 
             for (int i = 0; i < colunas.length; i++) {
@@ -84,5 +128,11 @@ public class RelatorioService {
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
         }
+    }
+    private void addBorders(CellStyle style) {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
     }
 }
