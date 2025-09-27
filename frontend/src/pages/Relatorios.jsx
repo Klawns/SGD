@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import FormInput from "../components/FormInput";
 
 export default function Relatorios() {
-
 	const { control, watch, handleSubmit } = useForm({
 		defaultValues: {
 			dataInicial: "",

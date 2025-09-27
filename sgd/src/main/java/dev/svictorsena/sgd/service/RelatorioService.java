@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,6 +24,8 @@ public class RelatorioService {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Despesas");
 
+            sheet.setHorizontallyCenter(true);
+
             // === Estilos ===
             Font titleFont = workbook.createFont();
             titleFont.setFontHeightInPoints((short) 16);
@@ -33,6 +34,7 @@ public class RelatorioService {
             CellStyle titleStyle = workbook.createCellStyle();
             titleStyle.setFont(titleFont);
             titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
@@ -53,11 +55,13 @@ public class RelatorioService {
             CellStyle currencyStyle = workbook.createCellStyle();
             currencyStyle.setDataFormat(workbook.createDataFormat().getFormat("R$ #,##0.00"));
             currencyStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            currencyStyle.setAlignment(HorizontalAlignment.RIGHT);
             addBorders(currencyStyle);
 
             CellStyle dateStyle = workbook.createCellStyle();
             dateStyle.setDataFormat(workbook.createDataFormat().getFormat("dd/MM/yyyy"));
             dateStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            dateStyle.setAlignment(HorizontalAlignment.RIGHT);
             addBorders(dateStyle);
 
             // === Título ===
@@ -65,10 +69,11 @@ public class RelatorioService {
             Cell titleCell = titleRow.createCell(0);
             titleCell.setCellValue("Relatório de Despesas");
             titleCell.setCellStyle(titleStyle);
-            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 4));
+
 
             // === Cabeçalho ===
-            String[] colunas = {"Descrição", "Categoria", "Valor", "Forma de Pagamento", "Data"};
+            String[] colunas = {"Descrição", "Categoria", "Forma de Pagamento", "Valor", "Data"};
             Row header = sheet.createRow(2);
 
             CellStyle style = workbook.createCellStyle();
@@ -80,7 +85,7 @@ public class RelatorioService {
                 cell.setCellValue(colunas[i]);
                 cell.setCellStyle(headerStyle);
             }
-            
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             Double totalValor = 0.0;
@@ -96,14 +101,14 @@ public class RelatorioService {
                 cell1.setCellValue(capitalize(d.getCategoria()));
                 cell1.setCellStyle(cellStyle);
 
-                Cell cell2 = row.createCell(2);
+                Cell cell3 = row.createCell(2);
+                cell3.setCellValue(capitalize(d.getFormaPagamento()));
+                cell3.setCellStyle(cellStyle);
+
+                Cell cell2 = row.createCell(3);
                 cell2.setCellValue(d.getValor());
                 cell2.setCellStyle(currencyStyle);
                 totalValor += d.getValor();
-
-                Cell cell3 = row.createCell(3);
-                cell3.setCellValue(capitalize(d.getFormaPagamento()));
-                cell3.setCellStyle(cellStyle);
 
                 Cell cell4 = row.createCell(4);
                 cell4.setCellValue(d.getData().format(formatter));

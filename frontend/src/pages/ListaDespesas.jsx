@@ -12,6 +12,7 @@ import { Search, CirclePlus } from "lucide-react";
 import { formatDateBR } from "../utils/formateDateBR";
 import Button from "../components/Button";
 import DespesaMessage from "../components/DespesasMessage";
+import { Loading } from "../components/Loading";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -137,8 +138,8 @@ export default function ListasDespesas() {
 					/>
 				</div>
 			</div>
-
-			{isLoading && <DespesaMessage message="Carregando despesas..." />}
+			
+			{isLoading && <Loading />}
 			{isError && (
 				<DespesaMessage message="Não foi possível listar as despesas" />
 			)}
