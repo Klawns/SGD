@@ -1,4 +1,5 @@
 import { Pencil, Trash } from "lucide-react";
+import { formatCurrencyToBR } from "../utils/formatCurrencyToBR";
 
 export default function CardDespesa({ despesa, setWantDelete, setWantEdit }) {
 	return (
@@ -8,7 +9,7 @@ export default function CardDespesa({ despesa, setWantDelete, setWantEdit }) {
 					{despesa.descricao}
 				</h2>
 				<span className="text-blue-400 font-bold">
-					R$ {despesa.valor.toFixed(2)}
+					{formatCurrencyToBR(despesa.valor)}
 				</span>
 			</div>
 

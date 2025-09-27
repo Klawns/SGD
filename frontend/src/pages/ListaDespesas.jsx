@@ -13,12 +13,21 @@ import { formatDateBR } from "../utils/formateDateBR";
 import Button from "../components/Button";
 import DespesaMessage from "../components/DespesasMessage";
 import { Loading } from "../components/Loading";
+import { formatCurrencyToBR } from "../utils/formatCurrencyToBR";
 
 export default function ListasDespesas() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [dataInicio, setDataInicio] = useState("");
 	const [dataFim, setDataFim] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
+
+	const { data: valorTotal, isLoading: loadingTotal } = useQuery({
+		queryKey: ["valorTotal"],
+		queryFn: async () => {
+			const response = await api.get("/despesas/valorTotal");
+			return response.data;
+		},
+	});
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["despesas", currentPage, dataInicio, dataFim, searchTerm],
@@ -138,7 +147,7 @@ export default function ListasDespesas() {
 					/>
 				</div>
 			</div>
-			
+
 			{isLoading && <Loading />}
 			{isError && (
 				<DespesaMessage message="Não foi possível listar as despesas" />
@@ -186,11 +195,21 @@ export default function ListasDespesas() {
 			</div>
 
 			{!data?.empty && (
-				<Pagination
-					currentPage={currentPage}
-					setCurrentPage={setCurrentPage}
-					totalPages={data?.totalPages ?? 1}
-				/>
+				<>
+					<div className="text-white rounded-xl py-2 px-4 bg-gray-800/60 w-48 flex flex-col justify-center items-center absolute bottom-20">
+						<p className="font-semibold">Valor total:</p>
+						<span className="text-blue-400 font-bold">
+							{loadingTotal
+								? "Carregando..."
+								: formatCurrencyToBR(valorTotal)}
+						</span>
+					</div>
+					<Pagination
+						currentPage={currentPage}
+						setCurrentPage={setCurrentPage}
+						totalPages={data?.totalPages ?? 1}
+					/>
+				</>
 			)}
 		</div>
 	);

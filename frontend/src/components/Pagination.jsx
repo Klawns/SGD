@@ -7,7 +7,7 @@ export default function Pagination({ currentPage, setCurrentPage, totalPages }) 
 	};
 
 	return (
-		<div className="absolute left-[50%] translate-x-[-50%] top-[85%]">
+		<div className="fixed inset-0 flex justify-center items-end mb-20">
 			<div className="flex gap-1">
 				<button
 					className="bg-blue-600 text-white font-bold px-4 py-2 rounded-[7px]"

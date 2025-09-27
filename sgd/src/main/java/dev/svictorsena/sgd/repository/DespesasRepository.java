@@ -26,8 +26,8 @@ public interface DespesasRepository extends JpaRepository<Despesas, Long> {
 
     Page<Despesas> findByUsuarioUsernameAndDataGreaterThanEqual(String username, LocalDate dataInicio, Pageable pageable);
 
-//    @Query("SELECT SUM(d.valor) FROM Despesas d WHERE d.usuario.username = :username")
-//    Double obterTotalValorPorUsuarioUsername(@Param("username") String username);
+    @Query("SELECT SUM(d.valor) FROM Despesas d WHERE d.usuario.username = :username")
+    Double obterTotalValorPorUsuarioUsername(@Param("username") String username);
 
 
 

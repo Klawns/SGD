@@ -51,6 +51,12 @@ public class DespesasController {
         return despesasService.getDespesasByUsuarioAndSearch(username, search, pageable);
     }
 
+    @GetMapping("/valorTotal")
+    public Double obterTotalValorPorUsuario(Authentication authentication) {
+        String username = authentication.getName();
+        return despesasRepository.obterTotalValorPorUsuarioUsername(username);
+    }
+
     @PostMapping
     public Despesas addDespesas(@RequestBody Despesas despesas, Authentication authentication) {
         String username = authentication.getName();
