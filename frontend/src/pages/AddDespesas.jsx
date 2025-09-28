@@ -37,12 +37,18 @@ export default function AddDespesas() {
 	}, [isSuccess, isError]);
 
 	const formaPagamento = watch("formaPagamento");
-
 	useEffect(() => {
 		if (!formaPagamento?.toLowerCase().includes("credito")) {
 			reset({ ...getValues(), parcelas: "" });
 		}
-	}, [formaPagamento, reset]);
+	}, [formaPagamento]);
+
+	const valor = watch("valor")
+	useEffect(() => {
+		if (valor < 0) {
+			reset({...getValues(), valor: ""})
+		}
+	}, [valor]);
 
 	const mutation = useMutation({
 		mutationFn: async (data) => {
@@ -102,7 +108,7 @@ export default function AddDespesas() {
 						<FormInput
 							name="descricao"
 							control={control}
-							rules={{ required: "Descrição é obrigatória"}}
+							rules={{ required: "Descrição é obrigatória" }}
 							label="Descrição"
 							placeholder="Adicione a descrição"
 						/>
@@ -119,7 +125,12 @@ export default function AddDespesas() {
 						<FormInput
 							name="data"
 							control={control}
-							rules={{ required: "Data é obrigatória", validate: (value) => !(new Date(value) > new Date()) || "Data inválida" }}
+							rules={{
+								required: "Data é obrigatória",
+								validate: (value) =>
+									!(new Date(value) > new Date()) ||
+									"Data inválida",
+							}}
 							label="Data"
 							type="date"
 						/>

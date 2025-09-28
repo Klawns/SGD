@@ -69,6 +69,10 @@ public class DespesasService {
         return false;
     }
 
+//    public void deleteAllDespesasByUsuarioUsername(String username) {
+//        despesasRepository.deleteAllByUsuarioUsername(username);
+//    }
+
     public Optional<Despesas> updateDespesasIfBelongsToUser(Long id, Despesas despesas, String username) {
         return despesasRepository.findById(id)
                 .filter(existing -> existing.getUsuario().getUsername().equals(username))

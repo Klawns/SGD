@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import CardDespesa from "../components/Card";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/Pagination";
 import api from "../services/api";
 import Toast from "../components/Toast";
@@ -12,7 +12,7 @@ import { Search, CirclePlus } from "lucide-react";
 import { formatDateBR } from "../utils/formateDateBR";
 import Button from "../components/Button";
 import DespesaMessage from "../components/DespesasMessage";
-import { Loading } from "../components/Loading";
+import { LoadingCircle } from "../components/LoadingCircle";
 import { formatCurrencyToBR } from "../utils/formatCurrencyToBR";
 
 export default function ListasDespesas() {
@@ -56,6 +56,13 @@ export default function ListasDespesas() {
 	});
 
 	const queryClient = useQueryClient();
+
+	// const mutation = useMutation({
+	// 	mutationFn: async () => {
+	// 		await api.delete("/despesas")
+	// 	},
+	// 	onSuccess: () => queryClient.invalidateQueries(["despesas"])
+	// })
 
 	useEffect(() => {
 		queryClient.invalidateQueries(["despesas"]);
@@ -118,26 +125,25 @@ export default function ListasDespesas() {
 
 				<div className="flex flex-row gap-3 items-center">
 					<input
-						className="bg-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors"
+						className="bg-gray-800/60 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors hover:bg-gray-800/80"
 						type="date"
 						onChange={(e) => setDataInicio(e.target.value)}
 						name=""
 						id=""
 					/>
 					<input
-						className="bg-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors"
+						className="bg-gray-800/60 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder-white text-white focus:ring-blue-500 focus:border-blue-400 transition-colors hover:bg-gray-800/80"
 						type="date"
 						onChange={(e) => setDataFim(e.target.value)}
-						name=""
-						id=""
 					/>
 					<input
 						onChange={(e) => setSearchTerm(e.target.value)}
 						value={searchTerm}
 						type="text"
-						className="rounded-md py-2 px-3 border-none outline-none bg-gray-700 text-white"
+						className="rounded-md py-2 px-3 border-none outline-none bg-gray-800/60 text-white hover:bg-gray-800/80"
 					/>
 					<Search
+						className="hover:scale-105"
 						cursor="pointer"
 						color="white"
 						strokeWidth={3}
@@ -148,7 +154,7 @@ export default function ListasDespesas() {
 				</div>
 			</div>
 
-			{isLoading && <Loading />}
+			{isLoading && <LoadingCircle />}
 			{isError && (
 				<DespesaMessage message="Não foi possível listar as despesas" />
 			)}
@@ -209,6 +215,11 @@ export default function ListasDespesas() {
 						setCurrentPage={setCurrentPage}
 						totalPages={data?.totalPages ?? 1}
 					/>
+					{/* <div className="absolute bottom-20 right-10">
+						<button onClick={() => mutation.mutate()} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">
+							Excluir despesas
+						</button>
+					</div> */}
 				</>
 			)}
 		</div>

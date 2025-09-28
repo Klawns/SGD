@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/despesas")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin()
 public class DespesasController {
 
     @Autowired
@@ -75,6 +75,19 @@ public class DespesasController {
             return ResponseEntity.status(403).build();
         }
     }
+
+//    @DeleteMapping
+//    public ResponseEntity<?> deleteDespesasByUsuarioUsername(Authentication authentication) {
+//        String username = authentication.getName();
+//
+//        try {
+//            despesasService.deleteAllDespesasByUsuarioUsername(username);
+//            return ResponseEntity.ok().build();
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return ResponseEntity.status(200).body(e.getMessage());
+//        }
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Despesas> editarDespesas(@PathVariable Long id,

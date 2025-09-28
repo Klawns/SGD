@@ -1,6 +1,7 @@
 package dev.svictorsena.sgd.repository;
 
 import dev.svictorsena.sgd.model.Despesas;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,9 @@ public interface DespesasRepository extends JpaRepository<Despesas, Long> {
 
     @Query("SELECT SUM(d.valor) FROM Despesas d WHERE d.usuario.username = :username")
     Double obterTotalValorPorUsuarioUsername(@Param("username") String username);
+
+//    @Transactional
+//    void deleteAllByUsuarioUsername(String username);
 
 
 
